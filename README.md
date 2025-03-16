@@ -49,5 +49,6 @@ Here’s how `pipex` handles processes and pipes:
 
 - **Name**: Javier Boga  
 - **GitHub**: [jbogad](https://github.com/jbogad)  
+- **linkedin**: [javierbogad](https://www.linkedin.com/in/javierboga/)
 
 ---
