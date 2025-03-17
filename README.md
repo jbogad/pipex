@@ -1,6 +1,6 @@
 # 🛠️ Pipex 🔗
 
-Welcome to my sleek and efficient `pipex` project! Crafted as part of the 42 Madrid journey, this program simulates UNIX pipes with finesse.
+Welcome to my `pipex` project! Crafted as part of the 42 Madrid journey, this program simulates UNIX pipes with finesse.
 
 ---
 
