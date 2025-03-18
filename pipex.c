@@ -22,6 +22,7 @@ void	sub_process(char **argv, char **envp, int *fd)
 	dup2(fd[1], STDOUT_FILENO);
 	dup2(filein, STDIN_FILENO);
 	close(fd[0]);
+	close(fd[1]);	
 	execute(argv[2], envp);
 }
 
@@ -57,7 +58,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	else
 	{
-		ft_putstr_fd("Error: Bad arguments", 2);
+		ft_putstr_fd("\033[31mError: Bad arguments\n\e[0m", 2);
 		ft_putstr_fd("Ex: ./pipex <file1> <cmd1> <cmd2> <file2>\n", 1);
 	}
 	return (0);

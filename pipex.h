@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-# include "../libft/libft.h"
+# include "libft/libft.h"
 
 /* Mandatory functions */
 void	error(void);
