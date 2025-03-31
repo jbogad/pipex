@@ -12,84 +12,71 @@
 
 #include "pipex.h"
 
-char	*find_path(char *cmd, char **envp)
+static char	*try_path(char **paths, char *cmd)
 {
-	char	**paths;
-	char	*path;
 	int		i;
 	char	*part_path;
+	char	*full_path;
 
-	i = 0;
-	while (ft_strnstr(envp[i], "PATH=", 5) == 0)
-		i++;
-	paths = ft_split(envp[i] + 5, ':');
 	i = 0;
 	while (paths[i])
 	{
 		part_path = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(part_path, cmd);
+		full_path = ft_strjoin(part_path, cmd);
 		free(part_path);
-		if (access(path, F_OK) == 0)
-			return (path);
-		free(path);
+		if (access(full_path, F_OK) == 0)
+			return (full_path);
+		free(full_path);
 		i++;
 	}
+	return (NULL);
+}
+
+char	*find_path(char *cmd, char **envp)
+{
+	int		i;
+	char	**paths;
+	char	*path;
+
+	if (!envp || !envp[0])
+		return (NULL);
+	i = 0;
+	while (envp[i] && ft_strnstr(envp[i], "PATH=", 5) == 0)
+		i++;
+	if (!envp[i])
+		return (NULL);
+	paths = ft_split(envp[i] + 5, ':');
+	path = try_path(paths, cmd);
 	i = -1;
 	while (paths[++i])
 		free(paths[i]);
 	free(paths);
-	return (0);
+	return (path);
 }
 
-void	error(void)
+static void	cmd_error(char **cmd)
 {
-	perror("Error");
-	exit(EXIT_FAILURE);
+	int	i;
+
+	ft_putstr_fd("pipex: command not found: ", 2);
+	ft_putstr_fd(cmd[0], 2);
+	ft_putstr_fd("\n", 2);
+	i = -1;
+	while (cmd[++i])
+		free(cmd[i]);
+	free(cmd);
+	exit(127);
 }
 
 void	execute(char *argv, char **envp)
 {
 	char	**cmd;
-	int		i;
 	char	*path;
 
-	i = -1;
 	cmd = ft_split(argv, ' ');
 	path = find_path(cmd[0], envp);
 	if (!path)
-	{
-		while (cmd[++i])
-			free(cmd[i]);
-		free(cmd);
-		error();
-	}
+		cmd_error(cmd);
 	if (execve(path, cmd, envp) == -1)
 		error();
-}
-
-int	get_next_line(char **line)
-{
-	char	*buffer;
-	int		index;
-	int		bytes_read;
-	char	current_char;
-
-	index = 0;
-	bytes_read = 0;
-	buffer = (char *)malloc(10000 * sizeof(char));
-	if (!buffer)
-		return (-1);
-	bytes_read = read(0, &current_char, 1);
-	while (bytes_read > 0 && current_char != '\n' && current_char != '\0')
-	{
-		if (current_char != '\n' && current_char != '\0')
-			buffer[index] = current_char;
-		index++;
-		bytes_read = read(0, &current_char, 1);
-	}
-	buffer[index] = '\n';
-	buffer[index + 1] = '\0';
-	*line = buffer;
-	free(buffer);
-	return (bytes_read);
 }
